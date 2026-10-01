@@ -53,7 +53,7 @@ steps:
       # optin no mesmo projeto). IAM_JWT_PUBLIC_KEY é o MESMO segredo que
       # ap-back-optin/ap-back-contratos já usam — mesmo IdP, mesma chave,
       # nenhum segredo novo aqui (docs/runbooks/gcp-setup.md seção 4).
-      - --set-secrets=DJANGO_SECRET_KEY=AGENDA_DJANGO_SECRET_KEY:latest,IAM_JWT_PUBLIC_KEY=IAM_JWT_PUBLIC_KEY:latest
+      - --set-secrets=DJANGO_SECRET_KEY=AGENDA_DJANGO_SECRET_KEY:latest,IAM_JWT_PUBLIC_KEY=IAM_JWT_PUBLIC_KEY:latest,IAM_JWT_PUBLIC_KEY_BRIKZ_IAM=IAM_JWT_PUBLIC_KEY_BRIKZ_IAM:latest
 
 substitutions:
   _TAG: manual                     # passe _TAG=$(git rev-parse --short HEAD) no submit
@@ -65,7 +65,7 @@ substitutions:
   # Origens do front autorizadas (vírgula). 5173 e 5174: o Vite cai pra 5174
   # quando a porta padrão já está em uso (outra sessão de dev rodando).
   # Atualize quando o ap-front tiver URL de homolog.
-  _CORS_ALLOWED_ORIGINS: http://localhost:5173,http://localhost:5174
+  _CORS_ALLOWED_ORIGINS: http://localhost:5173,http://localhost:5174,https://ap.brikz.ai,https://ap-front-1009092036032.southamerica-east1.run.app,https://ap-front-6sy5bhymwq-rj.a.run.app,https://ap-front-1009092036032.us-east1.run.app
   _CERC_AUTH_URL: https://api.int.cerc.com/oauth/token
   _CERC_API_BASE_URL: https://ap-homolog.cerc.inf.br
   _PUBSUB_TOPIC: agenda-webhook-inbox

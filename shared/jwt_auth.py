@@ -1,6 +1,7 @@
 """Autenticação Bearer JWT do IdP corporativo (design doc §3.3).
 
-Chave pública RS256 fixa (IAM_JWT_PUBLIC_KEY) e emissor esperado
+Chave pública RS256 fixa (IAM_JWT_PUBLIC_KEY, mais a opcional
+IAM_JWT_PUBLIC_KEY_BRIKZ_IAM) e emissor esperado
 (IAM_JWT_ISSUER) — sem JWKS/rede, mesmo padrão de shared/secrets.py para
 segredos estáticos. Rotas isentas (health, push do Pub/Sub) simplesmente
 não usam @jwt_required — não há middleware global com exceção por path.
@@ -23,8 +24,14 @@ class JwtAuthError(Exception):
         super().__init__(mensagem)
 
 
-def _public_key() -> str:
-    return os.environ["IAM_JWT_PUBLIC_KEY"].replace("\\n", "\n")
+def _public_keys() -> list[str]:
+    """Chaves públicas aceitas, em ordem: a de homolog (obrigatória) e, se
+    configurada, a do brikz-iam (IAM_JWT_PUBLIC_KEY_BRIKZ_IAM, login único)."""
+    chaves = [os.environ["IAM_JWT_PUBLIC_KEY"].replace("\\n", "\n")]
+    segunda = os.environ.get("IAM_JWT_PUBLIC_KEY_BRIKZ_IAM")
+    if segunda:
+        chaves.append(segunda.replace("\\n", "\n"))
+    return chaves
 
 
 def validar_bearer_token(authorization_header: str) -> dict:
@@ -35,14 +42,23 @@ def validar_bearer_token(authorization_header: str) -> dict:
     if not token:
         raise JwtAuthError("token vazio")
 
+    chaves = _public_keys()
+    issuer = os.environ["IAM_JWT_ISSUER"]
     try:
-        return jwt.decode(
-            token,
-            _public_key(),
-            algorithms=["RS256"],
-            issuer=os.environ["IAM_JWT_ISSUER"],
-            options={"require": ["exp", "iss"]},
-        )
+        for i, chave in enumerate(chaves):
+            try:
+                return jwt.decode(
+                    token,
+                    chave,
+                    algorithms=["RS256"],
+                    issuer=issuer,
+                    options={"require": ["exp", "iss"]},
+                )
+            except jwt.InvalidSignatureError:
+                # Só a assinatura inválida tenta a próxima chave; qualquer outra
+                # falha (expirado, issuer errado...) segue o fluxo normal.
+                if i == len(chaves) - 1:
+                    raise
     except jwt.ExpiredSignatureError:
         raise JwtAuthError("token expirado")
     except jwt.InvalidTokenError as exc:
