@@ -346,6 +346,10 @@ versions list` sem expor valores.
 (`gerar_jwt.py` do repositório do optin, chave privada dele — este serviço não tem
 gerador próprio, só validador).
 
+> Desde o endurecimento do `jwt_auth` (PR seguranca/jwt-auth-endurecido), tokens desta chave
+> local só são aceitos com `IAM_JWT_ACEITAR_CHAVE_HOMOLOG=true` e `ENVIRONMENT` != `production`;
+> o token sai com `type=access` e `sub` (obrigatórios). O front real usa o IAM (`IAM_JWT_PUBLIC_KEY_BRIKZ_IAM`).
+
 Feito em 2026-09-03: `/health` 200; `/agendas/urs` sem JWT → 401 `NAO_AUTENTICADO` (da
 aplicação); `/agendas/urs` com JWT do tenant 38138785000136 → 200 (`{"urs": [],
 "proximoCursor": null}`, tenant recém-provisionado pro agenda-service, mesmo sem dados
