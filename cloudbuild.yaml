@@ -48,7 +48,9 @@ steps:
       # ^#^ troca o separador para '#' — '@' não serve porque
       # PUBSUB_PUSH_INVOKER_SA é um e-mail de service account (tem '@'), e
       # CORS_ALLOWED_ORIGINS tem vírgulas.
-      - --set-env-vars=^#^ENVIRONMENT=${_ENVIRONMENT}#GOOGLE_CLOUD_PROJECT=$PROJECT_ID#ALLOWED_HOSTS=*#CORS_ALLOWED_ORIGINS=${_CORS_ALLOWED_ORIGINS}#IAM_JWT_ISSUER=brikz-iam#CERC_AUTH_URL=${_CERC_AUTH_URL}#CERC_API_BASE_URL=${_CERC_API_BASE_URL}#WEB_CONCURRENCY=2#PUBSUB_TOPIC_AGENDA_WEBHOOK=${_PUBSUB_TOPIC}#PUBSUB_PUSH_AUDIENCE=${_PUBSUB_PUSH_AUDIENCE}#PUBSUB_PUSH_INVOKER_SA=${_RUNTIME_SA}
+      # KEYCLOAK_AP_*: aceita também os tokens do Keycloak (realm ap, client
+      # ap-console) durante a transição IAM → Keycloak — ver shared/jwt_auth.py.
+      - --set-env-vars=^#^ENVIRONMENT=${_ENVIRONMENT}#GOOGLE_CLOUD_PROJECT=$PROJECT_ID#ALLOWED_HOSTS=*#CORS_ALLOWED_ORIGINS=${_CORS_ALLOWED_ORIGINS}#IAM_JWT_ISSUER=brikz-iam#KEYCLOAK_AP_ISSUER=https://auth.brikz.ai/realms/ap#KEYCLOAK_AP_AUDIENCE=ap-console#CERC_AUTH_URL=${_CERC_AUTH_URL}#CERC_API_BASE_URL=${_CERC_API_BASE_URL}#WEB_CONCURRENCY=2#PUBSUB_TOPIC_AGENDA_WEBHOOK=${_PUBSUB_TOPIC}#PUBSUB_PUSH_AUDIENCE=${_PUBSUB_PUSH_AUDIENCE}#PUBSUB_PUSH_INVOKER_SA=${_RUNTIME_SA}
       # DJANGO_SECRET_KEY tem prefixo AGENDA_ (evita colidir com o segredo do
       # optin no mesmo projeto). IAM_JWT_PUBLIC_KEY é o MESMO segredo que
       # ap-back-optin/ap-back-contratos já usam — mesmo IdP, mesma chave,
