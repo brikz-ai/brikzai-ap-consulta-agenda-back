@@ -60,7 +60,7 @@ steps:
       # IAM_JWT_ACEITAR_CHAVE_HOMOLOG=true (ausente aqui = recusada, fail-closed;
       # este deploy atende o front real mesmo com ENVIRONMENT=homolog). Para rotação
       # da chave do IAM, montar também IAM_JWT_PUBLIC_KEYS (PEMs concatenadas).
-      - --set-secrets=DJANGO_SECRET_KEY=AGENDA_DJANGO_SECRET_KEY:latest,IAM_JWT_PUBLIC_KEY=IAM_JWT_PUBLIC_KEY:latest,IAM_JWT_PUBLIC_KEY_BRIKZ_IAM=IAM_JWT_PUBLIC_KEY_BRIKZ_IAM:latest
+      - --set-secrets=DJANGO_SECRET_KEY=AGENDA_DJANGO_SECRET_KEY:latest,IAM_JWT_PUBLIC_KEY=IAM_JWT_PUBLIC_KEY:latest,IAM_JWT_PUBLIC_KEY_BRIKZ_IAM=IAM_JWT_PUBLIC_KEY_BRIKZ_IAM:latest,IAM_JWT_PUBLIC_KEYS=IAM_JWT_PUBLIC_KEYS:latest
 
 substitutions:
   _TAG: manual                     # passe _TAG=$(git rev-parse --short HEAD) no submit
