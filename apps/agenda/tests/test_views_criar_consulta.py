@@ -35,7 +35,7 @@ def keypair():
 
 def _token(private_pem, **overrides):
     payload = {
-        "exp": int(time.time()) + 300, "iss": "brikz-iam", "sub": "analista@teste.com",
+        "exp": int(time.time()) + 300, "iss": "brikz-iam", "type": "access", "sub": "analista@teste.com",
         "financiador_id": FINANCIADOR_TESTE,
     }
     payload.update(overrides)
@@ -52,7 +52,7 @@ def _limpar():
 @pytest.fixture(autouse=True)
 def _ambiente(monkeypatch, keypair):
     _, public_pem = keypair
-    monkeypatch.setenv("IAM_JWT_PUBLIC_KEY", public_pem)
+    monkeypatch.setenv("IAM_JWT_PUBLIC_KEY_BRIKZ_IAM", public_pem)
     monkeypatch.setenv("IAM_JWT_ISSUER", "brikz-iam")
     monkeypatch.setenv("CERC_API_BASE_URL", "https://ap-homolog.cerc.inf.br")
 

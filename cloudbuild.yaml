@@ -53,6 +53,11 @@ steps:
       # optin no mesmo projeto). IAM_JWT_PUBLIC_KEY é o MESMO segredo que
       # ap-back-optin/ap-back-contratos já usam — mesmo IdP, mesma chave,
       # nenhum segredo novo aqui (docs/runbooks/gcp-setup.md seção 4).
+      # IAM_JWT_PUBLIC_KEY_BRIKZ_IAM é a chave do IAM real. IAM_JWT_PUBLIC_KEY é a
+      # chave LOCAL de homolog (gerar_jwt.py): o jwt_auth só a aceita com
+      # IAM_JWT_ACEITAR_CHAVE_HOMOLOG=true (ausente aqui = recusada, fail-closed;
+      # este deploy atende o front real mesmo com ENVIRONMENT=homolog). Para rotação
+      # da chave do IAM, montar também IAM_JWT_PUBLIC_KEYS (PEMs concatenadas).
       - --set-secrets=DJANGO_SECRET_KEY=AGENDA_DJANGO_SECRET_KEY:latest,IAM_JWT_PUBLIC_KEY=IAM_JWT_PUBLIC_KEY:latest,IAM_JWT_PUBLIC_KEY_BRIKZ_IAM=IAM_JWT_PUBLIC_KEY_BRIKZ_IAM:latest
 
 substitutions:
